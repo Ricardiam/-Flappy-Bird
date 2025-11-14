@@ -22,7 +22,8 @@ while ejecutando:
 
 pygame.quit()
 """""
-dificultad
+dificultad saaa
 arrancar desde un ejecutable
 no usar lib externas  
 """
+sys.exit()
