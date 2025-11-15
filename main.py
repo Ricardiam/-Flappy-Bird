@@ -14,8 +14,8 @@ clock=pygame.time.Clock()
 def mostrar_menu():
   print("n\=====Menu====")
   print("1.Jugar")
-  print("2.opciones")
-  print("3.Salir")
+  
+  print("2.Salir")
 def main ():
   while True:
     mostrar_menu()
@@ -24,7 +24,14 @@ def main ():
     if opcion=="1":
       print("Iniciando el juegon\n")
       #logica del juego poner aqui
-    else opcion
+    elif opcion=="2":
+      print("saliendo del juego ")
+      break
+
+if __name__=="__main":
+  main()
+
+    
       
 
 ejecutando=True
