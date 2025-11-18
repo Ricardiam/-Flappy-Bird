@@ -27,13 +27,13 @@ while ejecutando:
 
  
 
-    screen.fill(black)
+  screen.fill(black)
 
-    pygame.draw.rect(screen, player_color, (player_x, player_y, player_size, player_size))
+  pygame.draw.rect(screen, player_color, (player_x, player_y, player_size, player_size))
 
     
-    pygame.display.flip()
-    clock.tick(Fps)
+  pygame.display.flip()
+  clock.tick(Fps)
 
 pygame.quit()
 sys.exit()
