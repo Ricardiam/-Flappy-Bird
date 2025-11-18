@@ -3,6 +3,7 @@ import sys
 
 Ancho=800
 Alto=600
+black=(0,0,0)
 
 Fps=60
 
@@ -16,11 +17,22 @@ while ejecutando:
   for evento in pygame.event.get():
     if evento.type==pygame.QUIT:
       ejecutando=False
-  pygame.display.flip()
+  
 
-  clock.tick(Fps)
+ 
 
-pygame.quit()
+      pygame.quit()
+      sys.exit()
+
+  
+
+      
+clock.tick(Fps)
+
+pygame.display.flip()
+
+
+
 
 
 
