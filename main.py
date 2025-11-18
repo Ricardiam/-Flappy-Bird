@@ -15,6 +15,10 @@ player_y = Suelo_Y - player_size
 player_color = (255, 255, 0)  
 color_piso = (104, 106, 217)
 
+vel_y = 0
+gravedad = 1
+salto_fuerza = -18
+
 
 pygame.init()
 pygame.display.set_caption(" ")
@@ -26,8 +30,17 @@ while ejecutando:
   for evento in pygame.event.get():
     if evento.type==pygame.QUIT:
       ejecutando=False
-  
+  teclas= pygame.key.get_pressed()
+  if teclas[pygame.K_SPACE]:
+    if player_y == Suelo_Y - player_size:
+      vel_y = salto_fuerza
 
+  vel_y += gravedad
+  player_y += vel_y
+
+  if player_y >= Suelo_Y - player_size:
+  player_y = Suelo_Y - player_size
+  vel_y = 0  
  
 
   screen.fill(black)
