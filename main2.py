@@ -241,3 +241,4 @@ while ejecutando:
 
     pygame.display.flip()
     clock.tick(Fps)
+    
