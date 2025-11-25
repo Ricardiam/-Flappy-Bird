@@ -74,14 +74,22 @@ class Nivel1(NivelBase):
         super().__init__(FONDO_NIVEL_1, pinchos)
 
 
+def reiniciar_nivel():
+    global player_y, velocidad_y, en_suelo, nivel_actual
+    player_y = Suelo_Y - player_size
+    velocidad_y = 0
+    en_suelo = True
+    nivel_actual = Nivel1()   # ← Crear nuevo nivel desde cero
+
+
 def game_over():
     font = pygame.font.SysFont(None, 60)
     texto = font.render("GAME OVER", True, (255, 0, 0))
     screen.blit(texto, (250, 250))
     pygame.display.flip()
-    pygame.time.wait(2000)
-    pygame.quit()
-    sys.exit()
+    pygame.time.wait(1500)
+
+    reiniciar_nivel()   # ← Reiniciar sin cerrar el juego
 
 
 def victoria():
@@ -93,8 +101,40 @@ def victoria():
     pygame.quit()
     sys.exit()
 
+def dibujar_menu():
+    screen.fill((30, 30, 30))
+
+    font = pygame.font.SysFont(None, 80)
+    titulo = font.render("Geometry Dash", True, (255, 255, 0))
+    screen.blit(titulo, (180, 100))
+
+    boton_jugar = pygame.Rect(300, 250, 200, 60)
+    pygame.draw.rect(screen, (100, 100, 255), boton_jugar)
+
+    texto = pygame.font.SysFont(None, 50).render("JUGAR", True, (255, 255, 255))
+    screen.blit(texto, (345, 260))
+
+    return boton_jugar
+
+
+def dibujar_menu_niveles():
+    screen.fill((20, 20, 60))
+    font = pygame.font.SysFont(None, 60)
+    texto = font.render("NIVELES", True, (255, 255, 0))
+    screen.blit(texto, (300, 50))
+
+    boton_nivel1 = pygame.Rect(250, 200, 300, 60)
+    pygame.draw.rect(screen, (150, 0, 200), boton_nivel1)
+
+    txt = pygame.font.SysFont(None, 50).render("Nivel 1", True, (255, 255, 255))
+    screen.blit(txt, (330, 210))
+
+    return boton_nivel1
+
 
 nivel_actual = Nivel1()
+estado_juego = "menu"
+
 
 
 ejecutando = True
@@ -103,43 +143,59 @@ while ejecutando:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             ejecutando = False
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_SPACE and en_suelo:
-                velocidad_y = fuerza_salto
-                en_suelo = False
-
-
-    velocidad_y += gravedad
-    player_y += velocidad_y
-
-
-    if player_y >= Suelo_Y - player_size:
-        player_y = Suelo_Y - player_size
-        velocidad_y = 0
-        en_suelo = True
-
-
-    nivel_actual.actualizar()
-
-
-    player_rect = pygame.Rect(player_x, player_y, player_size, player_size)
-
- # COLISIÓN  PINCHOS
-    for p in nivel_actual.pinchos:
-        if player_rect.colliderect(p):  
-            game_over()
-
-#  FIN 
-    if len(nivel_actual.pinchos) == 0:
-        victoria()
 
    
-    nivel_actual.dibujar(screen)
-    pygame.draw.rect(screen, color_piso, (0, Suelo_Y, Ancho, 50))
-    pygame.draw.rect(screen, player_color, player_rect)
+        if estado_juego == "menu":
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if boton_jugar.collidepoint(evento.pos):
+                    estado_juego = "niveles"
+
+  
+        elif estado_juego == "niveles":
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if boton_nivel1.collidepoint(evento.pos):
+                    nivel_actual = Nivel1()
+                    reiniciar_nivel()
+                    estado_juego = "jugando"
+
+        
+        elif estado_juego == "jugando":
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_SPACE and en_suelo:
+                    velocidad_y = fuerza_salto
+                    en_suelo = False
+
+   
+    if estado_juego == "menu":
+        boton_jugar = dibujar_menu()
+
+    elif estado_juego == "niveles":
+        boton_nivel1 = dibujar_menu_niveles()
+
+    elif estado_juego == "jugando":
+
+        velocidad_y += gravedad
+        player_y += velocidad_y
+
+        if player_y >= Suelo_Y - player_size:
+            player_y = Suelo_Y - player_size
+            velocidad_y = 0
+            en_suelo = True
+
+        nivel_actual.actualizar()
+
+        player_rect = pygame.Rect(player_x, player_y, player_size, player_size)
+
+        for p in nivel_actual.pinchos:
+            if player_rect.colliderect(p):
+                game_over()
+
+        if len(nivel_actual.pinchos) == 0:
+            victoria()
+
+        nivel_actual.dibujar(screen)
+        pygame.draw.rect(screen, color_piso, (0, Suelo_Y, Ancho, 50))
+        pygame.draw.rect(screen, player_color, player_rect)
 
     pygame.display.flip()
     clock.tick(Fps)
-
-pygame.quit()
-sys.exit()
