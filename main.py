@@ -22,6 +22,10 @@ SUELO_Y = ALTO - 50  # Posición Y del suelo
 
 # ====================================================================
 # MATRICES DE NIVELES
+# FORMATO CORRECTO:
+# ["bloque", x, y, ancho, alto]
+# ["pincho", x]
+# ["minipincho", x]
 # ====================================================================
 
 NIVEL_1 = [
@@ -35,59 +39,56 @@ NIVEL_1 = [
 
 NIVEL_2 = [
     ["pincho", 400],
-    ["pincho", 550],
 
-    ["bloque", 750, 120, 25],
-    ["pincho", 950],
-    ["pincho", 1100],
+    ["bloque", 700, SUELO_Y - 25, 120, 25],
 
-    ["pincho", 1300],
-    ["pincho", 1450],
-    ["pincho", 1600],
+    ["pincho", 1000],
 
-    ["bloque", 1800, 80, 40],
-    ["bloque", 1920, 80, 60],
-    ["bloque", 2040, 80, 80],
+    ["bloque", 1300, SUELO_Y - 40, 80, 40],
+    ["bloque", 1420, SUELO_Y - 60, 80, 60],
 
-    ["pincho", 2200],
-    ["pincho", 2350],
+    ["pincho", 1850],
+    ["pincho", 2150],
 
-    ["bloque", 2550, 200, 30],
-    ["pincho", 2650],
+    ["bloque", 2500, SUELO_Y - 30, 180, 30],
+    
+    ["pincho", 2800],
 
-    ["bloque", 2850, 60, 100],
-    ["bloque", 2920, 60, 80],
-    ["bloque", 2990, 60, 60],
-    ["bloque", 3060, 60, 40],
-    ["bloque", 3130, 60, 20],
+    # Bloques finales arreglados
+    ["bloque", 3100, SUELO_Y - 60, 80, 60],
+    ["bloque", 3240, SUELO_Y - 40, 80, 40],
+    ["bloque", 3400, SUELO_Y - 30, 100, 30],
+    ["bloque", 3600, SUELO_Y - 25, 120, 25],
 
-    ["pincho", 3250],
-    ["pincho", 3400],
-    ["pincho", 3550],
-    ["pincho", 3700],
-
-    ["bloque", 3900, 150, 35],
-    ["pincho", 4100],
-
-    ["bloque", 4300, 100, 50],
-    ["pincho", 4500]
+    ["pincho", 3900]
 ]
 
 NIVEL_3 = [
+    
     ["pincho", 300],
-    ["pincho", 450],
-    ["pincho", 600],
-    ["pincho", 800],
-    ["pincho", 950],
-    ["pincho", 1100],
-    ["pincho", 1300],
-    ["pincho", 1500],
 
-    ["bloque", 350, 50, 30],
-    ["bloque", 650, 50, 30],
-    ["bloque", 900, 50, 30],
-    ["bloque", 1200, 50, 30],
-    ["bloque", 1400, 50, 30]
+    
+    ["bloque", 600, SUELO_Y - 25, 120, 25],
+
+    # BLOQUES FLOTANTES 
+    ["bloque", 900, SUELO_Y - 70, 80, 25],
+    ["bloque", 1080, SUELO_Y - 80, 80, 25],
+    ["bloque", 1260, SUELO_Y - 90, 80, 25],
+
+    # Mini pinchos 
+    ["minipincho", 920],
+    ["minipincho", 950],
+    ["minipincho", 980],
+    ["minipincho", 1010],
+    ["minipincho", 1040],
+    ["minipincho", 1070],
+    ["minipincho", 1100],
+    ["minipincho", 1130],
+    ["minipincho", 1160],
+    ["minipincho", 1190],
+    ["minipincho", 1220],
+    ["minipincho", 1250],
+    ["minipincho", 1280],
 ]
 
 # ====================================================================
@@ -174,12 +175,23 @@ class Pincho(Obstaculo):
         p3 = (self.x + self.ancho / 2, self.y)
         pygame.draw.polygon(pantalla, self.color, [p1, p2, p3])
 
-class Bloque(Obstaculo):
-    def __init__(self, x, ancho=50, alto=30):
+class MiniPincho(Obstaculo):
+    def __init__(self, x, ancho=18, alto=26):
         y = SUELO_Y - alto
         super().__init__(x, y, ancho, alto)
-        self.color = ROJO
+        self.color = (255, 230, 100)
     
+    def dibujar(self, pantalla):
+        p1 = (self.x, self.y + self.alto)
+        p2 = (self.x + self.ancho, self.y + self.alto)
+        p3 = (self.x + self.ancho / 2, self.y)
+        pygame.draw.polygon(pantalla, self.color, [p1, p2, p3])
+
+class Bloque(Obstaculo):
+    def __init__(self, x, y, ancho, alto):
+        super().__init__(x, y, ancho, alto)
+        self.color = (0, 100, 255)
+
     def dibujar(self, pantalla):
         pygame.draw.rect(pantalla, self.color, (self.x, self.y, self.ancho, self.alto))
 
@@ -207,12 +219,17 @@ class Nivel:
                 x = item[1]
                 self.obstaculos.append(Pincho(x))
 
+            elif tipo == "minipincho":
+                x = item[1]
+                self.obstaculos.append(MiniPincho(x))
+
             elif tipo == "bloque":
                 x = item[1]
-                ancho = item[2]
-                alto = item[3]
-                self.obstaculos.append(Bloque(x, ancho, alto))
-    
+                y = item[2]
+                ancho = item[3]
+                alto = item[4]
+                self.obstaculos.append(Bloque(x, y, ancho, alto))
+
     def actualizar(self):
         for obstaculo in self.obstaculos[:]:
             obstaculo.velocidad = self.velocidad
@@ -267,7 +284,6 @@ class Juego:
         nivel = self.nivel_actual
         color = self.niveles[nivel].color_fondo
         vel = self.niveles[nivel].velocidad
-
         self.niveles[nivel] = Nivel(nivel, color, vel)
         self.jugador = Jugador()
 
