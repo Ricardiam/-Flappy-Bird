@@ -91,6 +91,59 @@ NIVEL_3 = [
     ["minipincho", 1280],
 ]
 
+NIVEL_4 = [
+    
+    ["pincho", 450],
+    ["pincho", 800],
+
+    ["bloque", 1100, SUELO_Y - 30, 130, 30],
+    ["bloque", 1300, SUELO_Y - 60, 130, 60],
+    ["bloque", 1500, SUELO_Y - 90, 130, 90],
+
+    ["pincho", 1250],
+    ["pincho", 1450],
+
+    ["minipincho", 1650],
+    ["minipincho", 1680],
+
+    ["minipincho", 1900],
+    ["minipincho", 1930],
+    ["minipincho", 1960],
+    ["minipincho", 1990],
+    ["minipincho", 2020],
+    ["minipincho", 2050],
+    ["minipincho", 2080],
+    ["minipincho", 2110],
+
+    ["bloque", 1920, SUELO_Y - 70, 180, 20],
+    
+    ["pincho", 2400],
+    ["pincho", 2600],
+    ["pincho", 2800],
+    ["pincho", 3000],
+    ["pincho", 3200],
+
+    ["bloque", 3500, SUELO_Y - 25, 400, 25],
+    ["bloque", 3500, SUELO_Y - 170, 400, 25],
+
+    ["minipincho", 3620, SUELO_Y - 51],
+    ["minipincho", 3650, SUELO_Y - 51],
+    ["minipincho", 3800, SUELO_Y - 51],
+    ["minipincho", 3830, SUELO_Y - 51],
+    
+    ["bloque", 3850, SUELO_Y - 50, 200, 50],
+    ["pincho", 4250],
+
+    ["bloque", 4300, SUELO_Y - 50, 120, 50],
+    ["minipincho", 4370, SUELO_Y - 79],
+    ["minipincho", 4400, SUELO_Y - 79],
+    ["pincho", 4650],
+
+    ["minipincho", 4930],
+    ["bloque", 4950, SUELO_Y - 40, 160, 40],
+    ["minipincho", 5110],
+]
+
 # ====================================================================
 # CLASES DEL JUEGO
 # ====================================================================
@@ -160,8 +213,9 @@ class Obstaculo:
     def obtener_rectangulo(self):
         return pygame.Rect(self.x, self.y, self.ancho, self.alto)
     
+    #Nuevo esta fuera
     def esta_fuera(self):
-        return self.x < -50
+        return self.x + self.ancho < 0
 
 class Pincho(Obstaculo):
     def __init__(self, x, ancho=30, alto=40):
@@ -175,9 +229,11 @@ class Pincho(Obstaculo):
         p3 = (self.x + self.ancho / 2, self.y)
         pygame.draw.polygon(pantalla, self.color, [p1, p2, p3])
 
+#Modificado Y
 class MiniPincho(Obstaculo):
-    def __init__(self, x, ancho=18, alto=26):
-        y = SUELO_Y - alto
+    def __init__(self, x, y=None, ancho=18, alto=26):
+        if y is None:
+            y = SUELO_Y - alto
         super().__init__(x, y, ancho, alto)
         self.color = (255, 230, 100)
     
@@ -207,7 +263,8 @@ class Nivel:
         niveles_data = {
             1: NIVEL_1,
             2: NIVEL_2,
-            3: NIVEL_3
+            3: NIVEL_3,
+            4: NIVEL_4
         }
 
         datos = niveles_data[self.numero]
@@ -218,10 +275,15 @@ class Nivel:
             if tipo == "pincho":
                 x = item[1]
                 self.obstaculos.append(Pincho(x))
-
+            
+            #Modificado y
             elif tipo == "minipincho":
                 x = item[1]
-                self.obstaculos.append(MiniPincho(x))
+                if len(item) > 2:
+                    y = item[2]
+                    self.obstaculos.append(MiniPincho(x, y))
+                else:
+                    self.obstaculos.append(MiniPincho(x))
 
             elif tipo == "bloque":
                 x = item[1]
@@ -267,7 +329,9 @@ class Juego:
         self.niveles = {
             1: Nivel(1, (50, 50, 150), 6),
             2: Nivel(2, (150, 50, 50), 7),
-            3: Nivel(3, (50, 150, 50), 8)
+            3: Nivel(3, (50, 150, 50), 8),
+            4: Nivel(4, (120, 50, 150), 7)
+
         }
     
     def cambiar_estado(self, nuevo_estado):
@@ -314,9 +378,9 @@ class Menu:
         pantalla.blit(texto, (ANCHO//2 - texto.get_width()//2, 50))
         
         self.botones = []
-        colores = [VERDE, AMARILLO, ROJO]
+        colores = [VERDE, AMARILLO, ROJO, MORADO]
         
-        for i in range(3):
+        for i in range(4):
             boton = pygame.Rect(250, 150 + i * 100, 300, 60)
             pygame.draw.rect(pantalla, colores[i], boton)
             fuente = pygame.font.SysFont(None, 50)
