@@ -92,11 +92,9 @@ NIVEL_3 = [
 ]
 
 NIVEL_4 = [
-    # --- INICIO ---
     ["pincho", 450],
     ["pincho", 800],
 
-    # --- ESCALONES (sin cambios) ---
     ["bloque", 1100, SUELO_Y - 30, 130, 30],
     ["bloque", 1300, SUELO_Y - 60, 130, 60],
     ["bloque", 1500, SUELO_Y - 90, 130, 90],
@@ -104,11 +102,9 @@ NIVEL_4 = [
     ["pincho", 1250],
     ["pincho", 1450],
 
-    # Minipinchos movidos para NO tocar el 3er bloque
     ["minipincho", 1650],
     ["minipincho", 1680],
 
-    # --- MINI-SPAM (sin tocar, solo movidos para no interferir) ---
     ["minipincho", 1900],
     ["minipincho", 1930],
     ["minipincho", 1960],
@@ -118,17 +114,14 @@ NIVEL_4 = [
     ["minipincho", 2080],
     ["minipincho", 2110],
 
-    # ⭐ PLATAFORMA FLOTANTE SOBRE LOS MINIPINCHOS
     ["bloque", 1920, SUELO_Y - 70, 180, 20],
 
-    # --- ZONA FULL PINCHOS AMARILLOS ORIGINAL ---
     ["pincho", 2400],
     ["pincho", 2600],
     ["pincho", 2800],
     ["pincho", 3000],
     ["pincho", 3200],
 
-    # --- TÚNEL (sin cambios) ---
     ["bloque", 3500, SUELO_Y - 25, 400, 25],
     ["bloque", 3500, SUELO_Y - 170, 400, 25],
 
@@ -138,7 +131,6 @@ NIVEL_4 = [
     ["minipincho", 3830, SUELO_Y - 51],
 
 
-    # --- FINAL (igual) ---
     ["bloque", 3850, SUELO_Y - 50, 200, 50],
     ["pincho", 4250],
 
