@@ -92,10 +92,11 @@ NIVEL_3 = [
 ]
 
 NIVEL_4 = [
-    
+    # --- INICIO ---
     ["pincho", 450],
     ["pincho", 800],
 
+    # --- ESCALONES (sin cambios) ---
     ["bloque", 1100, SUELO_Y - 30, 130, 30],
     ["bloque", 1300, SUELO_Y - 60, 130, 60],
     ["bloque", 1500, SUELO_Y - 90, 130, 90],
@@ -103,9 +104,11 @@ NIVEL_4 = [
     ["pincho", 1250],
     ["pincho", 1450],
 
+    # Minipinchos movidos para NO tocar el 3er bloque
     ["minipincho", 1650],
     ["minipincho", 1680],
 
+    # --- MINI-SPAM (sin tocar, solo movidos para no interferir) ---
     ["minipincho", 1900],
     ["minipincho", 1930],
     ["minipincho", 1960],
@@ -115,14 +118,17 @@ NIVEL_4 = [
     ["minipincho", 2080],
     ["minipincho", 2110],
 
+    # ⭐ PLATAFORMA FLOTANTE SOBRE LOS MINIPINCHOS
     ["bloque", 1920, SUELO_Y - 70, 180, 20],
-    
+
+    # --- ZONA FULL PINCHOS AMARILLOS ORIGINAL ---
     ["pincho", 2400],
     ["pincho", 2600],
     ["pincho", 2800],
     ["pincho", 3000],
     ["pincho", 3200],
 
+    # --- TÚNEL (sin cambios) ---
     ["bloque", 3500, SUELO_Y - 25, 400, 25],
     ["bloque", 3500, SUELO_Y - 170, 400, 25],
 
@@ -130,7 +136,9 @@ NIVEL_4 = [
     ["minipincho", 3650, SUELO_Y - 51],
     ["minipincho", 3800, SUELO_Y - 51],
     ["minipincho", 3830, SUELO_Y - 51],
-    
+
+
+    # --- FINAL (igual) ---
     ["bloque", 3850, SUELO_Y - 50, 200, 50],
     ["pincho", 4250],
 
@@ -307,6 +315,9 @@ class Nivel:
             obstaculo.dibujar(pantalla)
     
     def verificar_colision(self, jugador):
+        #Godmode Colision 
+        if juego.godmode:
+            return False
         rect_jugador = jugador.obtener_rectangulo()
         for obstaculo in self.obstaculos:
             if rect_jugador.colliderect(obstaculo.obtener_rectangulo()):
@@ -324,6 +335,8 @@ class Nivel:
 class Juego:
     def __init__(self):
         self.estado = "menu"
+        #Godmode
+        self.godmode = False
         self.nivel_actual = 1
         self.jugador = Jugador()
         self.niveles = {
@@ -442,6 +455,11 @@ while ejecutando:
         if evento.type == pygame.KEYDOWN:
             if juego.estado == "jugando" and evento.key == pygame.K_SPACE:
                 juego.jugador.saltar()
+            #Godmode Presionar g activar
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_g: 
+                    juego.godmode = not juego.godmode
+                    print("Godmode:", juego.godmode)
     
     if juego.estado == "menu":
         menu.dibujar_menu_principal(pantalla)
